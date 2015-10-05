@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Get an API Key from https://www.themoviedb.org/-->
+    <!--<string name="tmdb_api_key">Uncomment and put your API key here</string>-->
+</resources>
