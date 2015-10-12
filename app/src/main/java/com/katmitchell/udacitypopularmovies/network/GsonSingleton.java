@@ -1,9 +1,7 @@
-package com.katmitchell.udacitypopularmovies;
+package com.katmitchell.udacitypopularmovies.network;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import com.katmitchell.udacitypopularmovies.network.DateDeserializer;
 
 import java.util.Date;
 

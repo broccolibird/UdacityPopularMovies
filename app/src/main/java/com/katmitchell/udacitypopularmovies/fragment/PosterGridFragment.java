@@ -1,4 +1,4 @@
-package com.katmitchell.udacitypopularmovies;
+package com.katmitchell.udacitypopularmovies.fragment;
 
 import com.google.gson.Gson;
 
@@ -10,10 +10,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
+import com.katmitchell.udacitypopularmovies.model.SortOrder;
+import com.katmitchell.udacitypopularmovies.network.GsonSingleton;
+import com.katmitchell.udacitypopularmovies.adapter.MovieAdapter;
+import com.katmitchell.udacitypopularmovies.R;
 import com.katmitchell.udacitypopularmovies.model.DiscoverMovieResponse;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -30,7 +33,9 @@ public class PosterGridFragment extends Fragment implements Response.ErrorListen
 
     private static final String TAG = "PosterGridFragment";
 
-    private OnFragmentInteractionListener mListener;
+    private MovieAdapter.Listener mListener;
+
+    private FragmentListener mFragmentListener;
 
     private RecyclerView mRecyclerView;
 
@@ -61,26 +66,43 @@ public class PosterGridFragment extends Fragment implements Response.ErrorListen
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        mRequestQueue = Volley.newRequestQueue(getActivity());
-        mRequestQueue.add(new DiscoverMovieRequest(SORT_ORDER_HIGHEST_RATED, getString(R.string.tmdb_api_key), this));
         return root;
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-//        try {
-//            mListener = (OnFragmentInteractionListener) activity;
-//        } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+
+        try {
+            mListener = (MovieAdapter.Listener) activity;
+            mFragmentListener = (FragmentListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement MovieAdapter.Listener");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        mFragmentListener = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mFragmentListener != null) {
+            mFragmentListener.setTitle(getString(R.string.app_name));
+        }
+        mMovieAdapter.setListener(mListener);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mMovieAdapter.setListener(null);
     }
 
     @Override
@@ -88,10 +110,22 @@ public class PosterGridFragment extends Fragment implements Response.ErrorListen
         Toast.makeText(getActivity(), "Failed to get list of movies", Toast.LENGTH_LONG).show();
     }
 
-    public interface OnFragmentInteractionListener {
 
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+    public void resort(int sortOrder) {
+
+        String sortQuery;
+        switch (sortOrder) {
+            case SortOrder.POPULARITY:
+                sortQuery = SORT_ORDER_POPULARITY;
+                break;
+            default:
+            case SortOrder.USER_RATING:
+                sortQuery = SORT_ORDER_HIGHEST_RATED;
+                break;
+        }
+        mRequestQueue = Volley.newRequestQueue(getActivity());
+        mRequestQueue.add(new DiscoverMovieRequest(sortQuery,
+                getString(R.string.tmdb_api_key), this));
     }
 
     private static final String ENDPOINT_DISCOVER_MOVIES
@@ -139,5 +173,6 @@ public class PosterGridFragment extends Fragment implements Response.ErrorListen
             mMovieAdapter.setMovies(response.getResults());
         }
     }
+
 
 }

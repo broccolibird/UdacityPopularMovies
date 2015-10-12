@@ -25,8 +25,13 @@ public class DateDeserializer implements JsonDeserializer<Date> {
     };
 
     @Override
-    public Date deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws
+    public Date deserialize(JsonElement jsonElement, Type type,
+            JsonDeserializationContext jsonDeserializationContext) throws
             JsonParseException {
+
+        if (jsonElement.getAsString().isEmpty()) {
+            return null;
+        }
 
         for (String format : DATE_FORMATS) {
             try {
@@ -36,7 +41,9 @@ public class DateDeserializer implements JsonDeserializer<Date> {
             } catch (ParseException e) {
             }
         }
-        throw new JsonParseException("Unparselable date: \"" + jsonElement.getAsString() + "\". Supported formats: " + Arrays
-                .toString(DATE_FORMATS));
+        throw new JsonParseException(
+                "Unparselable date: \"" + jsonElement.getAsString() + "\". Supported formats: "
+                        + Arrays
+                        .toString(DATE_FORMATS));
     }
 }

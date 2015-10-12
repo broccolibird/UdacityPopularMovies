@@ -1,5 +1,6 @@
-package com.katmitchell.udacitypopularmovies;
+package com.katmitchell.udacitypopularmovies.adapter;
 
+import com.katmitchell.udacitypopularmovies.R;
 import com.katmitchell.udacitypopularmovies.model.Movie;
 import com.katmitchell.udacitypopularmovies.view.PosterViewHolder;
 
@@ -16,6 +17,8 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter {
 
     private List<Movie> mMovies;
+
+    private Listener mListener;
 
     public MovieAdapter() {
     }
@@ -35,13 +38,31 @@ public class MovieAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        final Movie movie =mMovies.get(position);
         PosterViewHolder pvh = (PosterViewHolder) holder;
 
-        pvh.populate(mMovies.get(position));
+        pvh.populate(movie);
+        pvh.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onMovieSelected(movie);
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return (mMovies == null) ? 0 : mMovies.size();
+    }
+
+    public void setListener(Listener listener) {
+        mListener = listener;
+    }
+
+    public interface Listener {
+
+        void onMovieSelected(Movie movie);
     }
 }
