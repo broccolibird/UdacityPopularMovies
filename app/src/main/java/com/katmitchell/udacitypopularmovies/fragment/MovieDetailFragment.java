@@ -1,37 +1,51 @@
 package com.katmitchell.udacitypopularmovies.fragment;
 
+import com.google.gson.Gson;
+
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.Volley;
 import com.katmitchell.udacitypopularmovies.R;
+import com.katmitchell.udacitypopularmovies.adapter.detail.MovieDetailAdapter;
 import com.katmitchell.udacitypopularmovies.model.Movie;
-import com.squareup.picasso.Picasso;
+import com.katmitchell.udacitypopularmovies.model.MovieVideoResponse;
+import com.katmitchell.udacitypopularmovies.model.Video;
+import com.katmitchell.udacitypopularmovies.network.GsonSingleton;
+import com.katmitchell.udacitypopularmovies.network.MovieApi;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
+import java.io.UnsupportedEncodingException;
 
-public class MovieDetailFragment extends Fragment {
+public class MovieDetailFragment extends Fragment implements Response.ErrorListener,
+        MovieDetailAdapter.Listener {
+
+    private static final String TAG = "MovieDetailFragment";
 
     private static final String ARG_MOVIE = "movie";
 
     private Movie mMovie;
 
-    private SimpleDateFormat mSdf = new SimpleDateFormat("yyyy");
+    private RequestQueue mRequestQueue;
 
-    private TextView mTitleTextView;
+    private RecyclerView mRecyclerView;
 
-    private ImageView mPosterThumbnail;
-
-    private TextView mYearTextView;
-
-    private TextView mUserRatingTextView;
-
-    private TextView mSynopsisTextView;
+    private MovieDetailAdapter mAdapter;
 
     private FragmentListener mListener;
 
@@ -60,19 +74,12 @@ public class MovieDetailFragment extends Fragment {
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
-        mTitleTextView = (TextView) root.findViewById(R.id.title_textview);
-        mPosterThumbnail = (ImageView) root.findViewById(R.id.poster_thumbnail);
-        mYearTextView = (TextView) root.findViewById(R.id.year);
-        mUserRatingTextView = (TextView) root.findViewById(R.id.user_rating);
-        mSynopsisTextView = (TextView) root.findViewById(R.id.synopsis);
+        mRecyclerView = (RecyclerView) root.findViewById(R.id.recyclerview);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new MovieDetailAdapter();
+        mAdapter.setMovie(mMovie);
+        mRecyclerView.setAdapter(mAdapter);
 
-        mTitleTextView.setText(mMovie.getTitle());
-        mYearTextView.setText(mSdf.format(mMovie.getDate()));
-        mUserRatingTextView.setText("" + mMovie.getVoteAverage() + "/10");
-        mSynopsisTextView.setText(mMovie.getOverview());
-
-        Picasso.with(getActivity()).load(mMovie.getPosterUrl(Movie.POSTER_SIZE_500))
-                .into(mPosterThumbnail);
         return root;
     }
 
@@ -91,6 +98,8 @@ public class MovieDetailFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+
+        mAdapter.setListener(null);
     }
 
     @Override
@@ -99,6 +108,56 @@ public class MovieDetailFragment extends Fragment {
 
         if (mListener != null) {
             mListener.setTitle(mMovie.getTitle());
+        }
+
+        mRequestQueue = Volley.newRequestQueue(getActivity());
+        mRequestQueue
+                .add(new MovieVideoRequest(mMovie.getId(), getString(R.string.tmdb_api_key), this));
+
+        mAdapter.setListener(this);
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        // TODO
+    }
+
+    @Override
+    public void onVideoSelected(Video video) {
+        Uri webpage = Uri.parse(video.getUrl());
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        startActivity(intent);
+    }
+
+
+    private class MovieVideoRequest extends Request<MovieVideoResponse> {
+
+        public MovieVideoRequest(int id, String apiKey, Response.ErrorListener listener) {
+            super(Method.GET,
+                    String.format(MovieApi.ENDPOINT_VIDEOS, id) +
+                            "?" + MovieApi.QUERY_PARAM_API_KEY + "=" + apiKey, listener);
+            Log.d(TAG, "new request: " + String.format(MovieApi.ENDPOINT_VIDEOS, id)
+                    + MovieApi.QUERY_PARAM_API_KEY + "=" + apiKey);
+        }
+
+        @Override
+        protected Response<MovieVideoResponse> parseNetworkResponse(NetworkResponse response) {
+            MovieVideoResponse movies;
+            try {
+                String json = new String(response.data,
+                        HttpHeaderParser.parseCharset(response.headers));
+                Gson gson = GsonSingleton.getInstance().getGson();
+                movies = gson.fromJson(json, MovieVideoResponse.class);
+                Log.d(TAG, "videos:\n" + json);
+                return Response.success(movies, HttpHeaderParser.parseCacheHeaders(response));
+            } catch (UnsupportedEncodingException e) {
+                return Response.error(new ParseError(e));
+            }
+        }
+
+        @Override
+        protected void deliverResponse(MovieVideoResponse response) {
+            mAdapter.setVideos(response.getResults());
         }
     }
 }

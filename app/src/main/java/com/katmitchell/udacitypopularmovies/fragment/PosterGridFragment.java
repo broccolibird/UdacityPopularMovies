@@ -15,6 +15,7 @@ import com.katmitchell.udacitypopularmovies.network.GsonSingleton;
 import com.katmitchell.udacitypopularmovies.adapter.MovieAdapter;
 import com.katmitchell.udacitypopularmovies.R;
 import com.katmitchell.udacitypopularmovies.model.DiscoverMovieResponse;
+import com.katmitchell.udacitypopularmovies.network.MovieApi;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -116,11 +117,11 @@ public class PosterGridFragment extends Fragment implements Response.ErrorListen
         String sortQuery;
         switch (sortOrder) {
             case SortOrder.POPULARITY:
-                sortQuery = SORT_ORDER_POPULARITY;
+                sortQuery = MovieApi.SORT_ORDER_POPULARITY;
                 break;
             default:
             case SortOrder.USER_RATING:
-                sortQuery = SORT_ORDER_HIGHEST_RATED;
+                sortQuery = MovieApi.SORT_ORDER_HIGHEST_RATED;
                 break;
         }
         mRequestQueue = Volley.newRequestQueue(getActivity());
@@ -128,30 +129,19 @@ public class PosterGridFragment extends Fragment implements Response.ErrorListen
                 getString(R.string.tmdb_api_key), this));
     }
 
-    private static final String ENDPOINT_DISCOVER_MOVIES
-            = "http://api.themoviedb.org/3/discover/movie";
-
-    private static final String QUERY_PARAM_SORT_BY = "sort_by";
-
-    private static final String SORT_ORDER_POPULARITY = "popularity.desc";
-
-    private static final String SORT_ORDER_HIGHEST_RATED = "vote_average.desc";
-
-    private static final String QUERY_PARAM_API_KEY = "api_key";
-
 
     private class DiscoverMovieRequest extends Request<DiscoverMovieResponse> {
 
         public DiscoverMovieRequest(String sortOrder, String apiKey,
                 Response.ErrorListener listener) {
             super(Method.GET,
-                    ENDPOINT_DISCOVER_MOVIES + "?" + QUERY_PARAM_SORT_BY + "=" + sortOrder + "&"
-                            + QUERY_PARAM_API_KEY + "=" + apiKey,
+                    MovieApi.ENDPOINT_DISCOVER_MOVIES + "?" + MovieApi.QUERY_PARAM_SORT_BY + "=" + sortOrder + "&"
+                            + MovieApi.QUERY_PARAM_API_KEY + "=" + apiKey,
                     listener);
 
-            Log.d(TAG, "new request: " + ENDPOINT_DISCOVER_MOVIES + "?" + QUERY_PARAM_SORT_BY + "="
+            Log.d(TAG, "new request: " + MovieApi.ENDPOINT_DISCOVER_MOVIES + "?" + MovieApi.QUERY_PARAM_SORT_BY + "="
                     + sortOrder + "&"
-                    + QUERY_PARAM_API_KEY + "=" + apiKey);
+                    + MovieApi.QUERY_PARAM_API_KEY + "=" + apiKey);
         }
 
         @Override
@@ -162,6 +152,7 @@ public class PosterGridFragment extends Fragment implements Response.ErrorListen
                         HttpHeaderParser.parseCharset(response.headers));
                 Gson gson = GsonSingleton.getInstance().getGson();
                 movies = gson.fromJson(json, DiscoverMovieResponse.class);
+                Log.d(TAG, "json\n" + json);
                 return Response.success(movies, HttpHeaderParser.parseCacheHeaders(response));
             } catch (UnsupportedEncodingException e) {
                 return Response.error(new ParseError(e));

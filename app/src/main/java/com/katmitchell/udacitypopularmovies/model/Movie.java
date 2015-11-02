@@ -13,6 +13,9 @@ import java.util.List;
  */
 public class Movie implements Parcelable {
 
+    @SerializedName("id")
+    private int id;
+
     @SerializedName("adult")
     private boolean adult;
 
@@ -48,6 +51,10 @@ public class Movie implements Parcelable {
 
     @SerializedName("vote_count")
     private int voteCount;
+
+    public int getId() {
+        return id;
+    }
 
     private static final String BASE_URL_POSTER = "http://image.tmdb.org/t/p/";
 
