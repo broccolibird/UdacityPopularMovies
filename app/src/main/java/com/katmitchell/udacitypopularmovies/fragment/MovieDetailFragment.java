@@ -13,6 +13,7 @@ import com.android.volley.toolbox.Volley;
 import com.katmitchell.udacitypopularmovies.R;
 import com.katmitchell.udacitypopularmovies.adapter.detail.MovieDetailAdapter;
 import com.katmitchell.udacitypopularmovies.model.Movie;
+import com.katmitchell.udacitypopularmovies.model.MovieReviewResponse;
 import com.katmitchell.udacitypopularmovies.model.MovieVideoResponse;
 import com.katmitchell.udacitypopularmovies.model.Video;
 import com.katmitchell.udacitypopularmovies.network.GsonSingleton;
@@ -110,10 +111,11 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
             mListener.setTitle(mMovie.getTitle());
         }
 
+        String apiKey = getString(R.string.tmdb_api_key);
         mRequestQueue = Volley.newRequestQueue(getActivity());
         mRequestQueue
-                .add(new MovieVideoRequest(mMovie.getId(), getString(R.string.tmdb_api_key), this));
-
+                .add(new MovieVideoRequest(mMovie.getId(), apiKey, this));
+        mRequestQueue.add(new MovieReviewRequest(mMovie.getId(), apiKey, this));
         mAdapter.setListener(this);
     }
 
@@ -137,7 +139,7 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
                     String.format(MovieApi.ENDPOINT_VIDEOS, id) +
                             "?" + MovieApi.QUERY_PARAM_API_KEY + "=" + apiKey, listener);
             Log.d(TAG, "new request: " + String.format(MovieApi.ENDPOINT_VIDEOS, id)
-                    + MovieApi.QUERY_PARAM_API_KEY + "=" + apiKey);
+                    + "?" + MovieApi.QUERY_PARAM_API_KEY + "=" + apiKey);
         }
 
         @Override
@@ -158,6 +160,34 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
         @Override
         protected void deliverResponse(MovieVideoResponse response) {
             mAdapter.setVideos(response.getResults());
+        }
+    }
+
+    private class MovieReviewRequest extends Request<MovieReviewResponse> {
+
+        public MovieReviewRequest(int id, String apiKey, Response.ErrorListener listener) {
+            super(Method.GET,
+                    String.format(MovieApi.ENDPOINT_REVIEWS, id) + "?"
+                            + MovieApi.QUERY_PARAM_API_KEY
+                            + "=" + apiKey, listener);
+        }
+
+        @Override
+        protected Response<MovieReviewResponse> parseNetworkResponse(NetworkResponse response) {
+            MovieReviewResponse reviews;
+            try {
+                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                Gson gson = GsonSingleton.getInstance().getGson();
+                reviews = gson.fromJson(json, MovieReviewResponse.class);
+                return Response.success(reviews, HttpHeaderParser.parseCacheHeaders(response));
+            } catch (UnsupportedEncodingException e) {
+                return Response.error(new ParseError(e));
+            }
+        }
+
+        @Override
+        protected void deliverResponse(MovieReviewResponse response) {
+            mAdapter.setReviews(response.getResults());
         }
     }
 }

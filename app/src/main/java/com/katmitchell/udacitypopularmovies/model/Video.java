@@ -48,6 +48,7 @@ public class Video {
     }
 
     public String getUrl() {
-        return "https://www.youtube.com/watch?v=" + key;
+        return String.format("https://www.youtube.com/watch?v=%s",
+                key);
     }
 }

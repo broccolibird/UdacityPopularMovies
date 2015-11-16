@@ -11,6 +11,8 @@ public class MovieApi {
 
     public static final String ENDPOINT_VIDEOS = BASE_URL + "/movie/%d/videos";
 
+    public static final String ENDPOINT_REVIEWS = BASE_URL + "/movie/%d/reviews";
+
     public static final String QUERY_PARAM_SORT_BY = "sort_by";
 
     public static final String SORT_ORDER_POPULARITY = "popularity.desc";
