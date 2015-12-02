@@ -1,15 +1,20 @@
 package com.katmitchell.udacitypopularmovies.adapter.detail;
 
 import com.katmitchell.udacitypopularmovies.R;
+import com.katmitchell.udacitypopularmovies.data.MovieContract;
+import com.katmitchell.udacitypopularmovies.data.MoviesProvider;
 import com.katmitchell.udacitypopularmovies.model.Movie;
 import com.katmitchell.udacitypopularmovies.model.Review;
 import com.katmitchell.udacitypopularmovies.model.Video;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import java.util.List;
 
@@ -32,14 +37,27 @@ public class MovieDetailAdapter extends RecyclerView.Adapter {
 
     private Movie mMovie;
 
+    private boolean isFavorite;
+
     private List<Video> mVideos;
 
     private List<Review> mReviews;
 
     private Listener mListener;
 
-    public void setMovie(Movie movie) {
+    public void setMovie(Context context, Movie movie) {
         mMovie = movie;
+        Cursor cursor = context.getContentResolver()
+                .query(
+                        MovieContract.FavoriteMovieEntry.CONTENT_URI,
+                        new String[]{MovieContract.FavoriteMovieEntry._ID,
+                                MovieContract.FavoriteMovieEntry.COLUMN_API_ID},
+                        MovieContract.FavoriteMovieEntry.COLUMN_API_ID + " = ?",
+                        new String[]{"" + mMovie.getId()},
+                        null);
+        isFavorite = cursor.moveToFirst();
+        cursor.close();
+
         notifyDataSetChanged();
     }
 
@@ -65,7 +83,23 @@ public class MovieDetailAdapter extends RecyclerView.Adapter {
             case TYPE_DETAIL:
                 v = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.row_movie_detail, parent, false);
-                MovieInfoViewHolder mivh = new MovieInfoViewHolder(v);
+                final MovieInfoViewHolder mivh = new MovieInfoViewHolder(v);
+                mivh.mFavoriteButton.setChecked(isFavorite);
+                mivh.mFavoriteButton.setOnCheckedChangeListener(
+                        new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView,
+                                    boolean isChecked) {
+                                if (isChecked) {
+                                    mivh.itemView.getContext().getContentResolver().insert(
+                                            MovieContract.FavoriteMovieEntry.CONTENT_URI,
+                                            MoviesProvider.movieToContentValues(mMovie));
+                                    isFavorite = true;
+                                } else {
+                                    // TODO: remove from db
+                                }
+                            }
+                        });
                 return mivh;
 
             case TYPE_TRAILER:

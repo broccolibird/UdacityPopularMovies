@@ -2,5 +2,6 @@
     <string name="app_name">Popular Movies</string>
     <string name="trailers_header">Trailers</string>
     <string name="reviews_header">Reviews</string>
+    <string name="content_authority">com.katmitchell.udacitypopularmovies</string>
 
 </resources>

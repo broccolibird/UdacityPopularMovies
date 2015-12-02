@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.text.SimpleDateFormat;
 
@@ -30,6 +31,8 @@ public class MovieInfoViewHolder extends RecyclerView.ViewHolder {
 
     private TextView mSynopsisTextView;
 
+    public ToggleButton mFavoriteButton;
+
     public MovieInfoViewHolder(View itemView) {
         super(itemView);
 
@@ -38,7 +41,7 @@ public class MovieInfoViewHolder extends RecyclerView.ViewHolder {
         mYearTextView = (TextView) itemView.findViewById(R.id.year);
         mUserRatingTextView = (TextView) itemView.findViewById(R.id.user_rating);
         mSynopsisTextView = (TextView) itemView.findViewById(R.id.synopsis);
-
+        mFavoriteButton = (ToggleButton) itemView.findViewById(R.id.favorite);
 
     }
 

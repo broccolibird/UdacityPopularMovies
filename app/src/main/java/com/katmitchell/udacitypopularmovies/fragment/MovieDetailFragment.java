@@ -78,7 +78,7 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
         mRecyclerView = (RecyclerView) root.findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new MovieDetailAdapter();
-        mAdapter.setMovie(mMovie);
+        mAdapter.setMovie(getActivity(), mMovie);
         mRecyclerView.setAdapter(mAdapter);
 
         return root;
