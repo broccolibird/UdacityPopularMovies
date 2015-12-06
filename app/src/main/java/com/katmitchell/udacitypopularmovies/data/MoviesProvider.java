@@ -209,13 +209,13 @@ public class MoviesProvider extends ContentProvider {
     public static Movie cursorToMovie(Cursor cursor) {
         Movie movie = new Movie();
 
-        movie.setId(cursor.getInt(0));
-        movie.setOverview(cursor.getString(1));
-        movie.setDate(new Date(cursor.getLong(2)));
-        movie.setPosterPath(cursor.getString(3));
-        movie.setTitle(cursor.getString(4));
-        movie.setVideo((cursor.getInt(5) == 1));
-        movie.setVoteAverage(cursor.getDouble(6));
+        movie.setId(cursor.getInt(1));
+        movie.setOverview(cursor.getString(2));
+        movie.setDate(new Date(cursor.getLong(3)));
+        movie.setPosterPath(cursor.getString(4));
+        movie.setTitle(cursor.getString(5));
+        movie.setVideo((cursor.getInt(6) == 1));
+        movie.setVoteAverage(cursor.getDouble(7));
 
         return movie;
     }

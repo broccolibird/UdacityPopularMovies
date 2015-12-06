@@ -1,4 +1,4 @@
-package com.katmitchell.udacitypopularmovies.fragment;
+package com.katmitchell.udacitypopularmovies.detail;
 
 import com.google.gson.Gson;
 
@@ -11,7 +11,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
 import com.katmitchell.udacitypopularmovies.R;
-import com.katmitchell.udacitypopularmovies.adapter.detail.MovieDetailAdapter;
+import com.katmitchell.udacitypopularmovies.fragment.FragmentListener;
 import com.katmitchell.udacitypopularmovies.model.Movie;
 import com.katmitchell.udacitypopularmovies.model.MovieReviewResponse;
 import com.katmitchell.udacitypopularmovies.model.MovieVideoResponse;

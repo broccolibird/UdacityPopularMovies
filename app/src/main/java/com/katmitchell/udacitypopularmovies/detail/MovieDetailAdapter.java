@@ -1,8 +1,13 @@
-package com.katmitchell.udacitypopularmovies.adapter.detail;
+package com.katmitchell.udacitypopularmovies.detail;
 
 import com.katmitchell.udacitypopularmovies.R;
 import com.katmitchell.udacitypopularmovies.data.MovieContract;
 import com.katmitchell.udacitypopularmovies.data.MoviesProvider;
+import com.katmitchell.udacitypopularmovies.detail.view.MovieInfoViewHolder;
+import com.katmitchell.udacitypopularmovies.detail.view.ReviewHeaderViewHolder;
+import com.katmitchell.udacitypopularmovies.detail.view.ReviewViewHolder;
+import com.katmitchell.udacitypopularmovies.detail.view.TrailerHeaderViewHolder;
+import com.katmitchell.udacitypopularmovies.detail.view.TrailerViewHolder;
 import com.katmitchell.udacitypopularmovies.model.Movie;
 import com.katmitchell.udacitypopularmovies.model.Review;
 import com.katmitchell.udacitypopularmovies.model.Video;
@@ -91,12 +96,19 @@ public class MovieDetailAdapter extends RecyclerView.Adapter {
                             public void onCheckedChanged(CompoundButton buttonView,
                                     boolean isChecked) {
                                 if (isChecked) {
-                                    mivh.itemView.getContext().getContentResolver().insert(
-                                            MovieContract.FavoriteMovieEntry.CONTENT_URI,
-                                            MoviesProvider.movieToContentValues(mMovie));
+                                    mivh.itemView.getContext().getContentResolver()
+                                            .insert(
+                                                    MovieContract.FavoriteMovieEntry.CONTENT_URI,
+                                                    MoviesProvider.movieToContentValues(mMovie));
                                     isFavorite = true;
                                 } else {
-                                    // TODO: remove from db
+                                    mivh.itemView.getContext().getContentResolver()
+                                            .delete(
+                                                    MovieContract.FavoriteMovieEntry.CONTENT_URI,
+                                                    MovieContract.FavoriteMovieEntry.COLUMN_API_ID
+                                                            + "= ?",
+                                                    new String[]{Integer.toString(mMovie.getId())});
+                                    isFavorite = false;
                                 }
                             }
                         });

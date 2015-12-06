@@ -1,4 +1,4 @@
-package com.katmitchell.udacitypopularmovies.view;
+package com.katmitchell.udacitypopularmovies.movie.view;
 
 import com.katmitchell.udacitypopularmovies.R;
 import com.katmitchell.udacitypopularmovies.model.Movie;

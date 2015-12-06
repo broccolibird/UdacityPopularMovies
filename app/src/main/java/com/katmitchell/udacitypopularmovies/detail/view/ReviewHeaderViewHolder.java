@@ -1,4 +1,4 @@
-package com.katmitchell.udacitypopularmovies.adapter.detail;
+package com.katmitchell.udacitypopularmovies.detail.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

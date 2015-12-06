@@ -1,10 +1,10 @@
-package com.katmitchell.udacitypopularmovies.activity;
+package com.katmitchell.udacitypopularmovies;
 
-import com.katmitchell.udacitypopularmovies.adapter.SortSpinnerAdapter;
+import com.katmitchell.udacitypopularmovies.movie.SortSpinnerAdapter;
 import com.katmitchell.udacitypopularmovies.fragment.FragmentListener;
-import com.katmitchell.udacitypopularmovies.adapter.MovieAdapter;
-import com.katmitchell.udacitypopularmovies.fragment.MovieDetailFragment;
-import com.katmitchell.udacitypopularmovies.fragment.PosterGridFragment;
+import com.katmitchell.udacitypopularmovies.movie.MovieAdapter;
+import com.katmitchell.udacitypopularmovies.detail.MovieDetailFragment;
+import com.katmitchell.udacitypopularmovies.movie.PosterGridFragment;
 import com.katmitchell.udacitypopularmovies.R;
 import com.katmitchell.udacitypopularmovies.model.Movie;
 

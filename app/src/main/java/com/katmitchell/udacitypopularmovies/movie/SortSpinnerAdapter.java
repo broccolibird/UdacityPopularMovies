@@ -1,4 +1,4 @@
-package com.katmitchell.udacitypopularmovies.adapter;
+package com.katmitchell.udacitypopularmovies.movie;
 
 import com.katmitchell.udacitypopularmovies.R;
 import com.katmitchell.udacitypopularmovies.model.SortOrder;
@@ -17,9 +17,10 @@ public class SortSpinnerAdapter extends BaseAdapter {
     private int[] sortOptions;
 
     public SortSpinnerAdapter() {
-        sortOptions = new int[2];
+        sortOptions = new int[3];
         sortOptions[0] = SortOrder.POPULARITY;
         sortOptions[1] = SortOrder.USER_RATING;
+        sortOptions[2] = SortOrder.FAVORITES;
     }
 
     @Override
@@ -43,14 +44,7 @@ public class SortSpinnerAdapter extends BaseAdapter {
                 .inflate(R.layout.row_spinner_sort, parent, false);
 
         TextView textView = (TextView) root.findViewById(R.id.text);
-        switch (sortOptions[position]) {
-            case SortOrder.POPULARITY:
-                textView.setText("Popularity");
-                break;
-            case SortOrder.USER_RATING:
-                textView.setText("User rating");
-                break;
-        }
+        setText(textView, position);
         return root;
     }
 
@@ -60,6 +54,12 @@ public class SortSpinnerAdapter extends BaseAdapter {
                 .inflate(R.layout.row_spinner_sort, parent, false);
 
         TextView textView = (TextView) root.findViewById(R.id.text);
+        setText(textView, position);
+        return root;
+    }
+
+    private void setText (TextView textView, int position) {
+
         switch (sortOptions[position]) {
             case SortOrder.POPULARITY:
                 textView.setText("Popularity");
@@ -67,7 +67,9 @@ public class SortSpinnerAdapter extends BaseAdapter {
             case SortOrder.USER_RATING:
                 textView.setText("User rating");
                 break;
+            case SortOrder.FAVORITES:
+                textView.setText("Favorites");
+                break;
         }
-        return root;
     }
 }

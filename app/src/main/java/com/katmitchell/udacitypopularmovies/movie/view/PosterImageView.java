@@ -1,4 +1,4 @@
-package com.katmitchell.udacitypopularmovies.view;
+package com.katmitchell.udacitypopularmovies.movie.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

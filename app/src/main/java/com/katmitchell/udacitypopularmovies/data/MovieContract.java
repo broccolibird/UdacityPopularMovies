@@ -37,6 +37,17 @@ public class MovieContract {
 
         public static final String COLUMN_VOTE_AVERAGE = "vote_average";
 
+        public static final String[] FULL_PROJECTION = new String[]{
+                _ID,
+                COLUMN_API_ID,
+                COLUMN_OVERVIEW,
+                COLUMN_DATE,
+                COLUMN_POSTER_PATH,
+                COLUMN_TITLE,
+                COLUMN_VIDEO,
+                COLUMN_VOTE_AVERAGE
+        };
+
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
                 .appendPath(TABLE_FAVORITE_MOVIES).build();
 

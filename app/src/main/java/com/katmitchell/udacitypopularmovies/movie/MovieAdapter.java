@@ -1,8 +1,8 @@
-package com.katmitchell.udacitypopularmovies.adapter;
+package com.katmitchell.udacitypopularmovies.movie;
 
 import com.katmitchell.udacitypopularmovies.R;
 import com.katmitchell.udacitypopularmovies.model.Movie;
-import com.katmitchell.udacitypopularmovies.view.PosterViewHolder;
+import com.katmitchell.udacitypopularmovies.movie.view.PosterViewHolder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

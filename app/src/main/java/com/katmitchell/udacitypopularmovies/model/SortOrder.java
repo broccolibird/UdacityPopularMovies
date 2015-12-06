@@ -9,4 +9,6 @@ public class SortOrder {
 
     public static final int USER_RATING = 1;
 
+    public static final int FAVORITES = 2;
+
 }
