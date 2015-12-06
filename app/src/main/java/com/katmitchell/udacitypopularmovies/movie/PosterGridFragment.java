@@ -12,7 +12,6 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
 import com.katmitchell.udacitypopularmovies.data.MovieContract;
 import com.katmitchell.udacitypopularmovies.data.MoviesProvider;
-import com.katmitchell.udacitypopularmovies.fragment.FragmentListener;
 import com.katmitchell.udacitypopularmovies.model.Movie;
 import com.katmitchell.udacitypopularmovies.model.SortOrder;
 import com.katmitchell.udacitypopularmovies.network.GsonSingleton;
@@ -42,8 +41,6 @@ public class PosterGridFragment extends Fragment implements Response.ErrorListen
     private static final String TAG = "PosterGridFragment";
 
     private MovieAdapter.Listener mListener;
-
-    private FragmentListener mFragmentListener;
 
     private RecyclerView mRecyclerView;
 
@@ -83,7 +80,6 @@ public class PosterGridFragment extends Fragment implements Response.ErrorListen
 
         try {
             mListener = (MovieAdapter.Listener) activity;
-            mFragmentListener = (FragmentListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement MovieAdapter.Listener");
@@ -94,16 +90,12 @@ public class PosterGridFragment extends Fragment implements Response.ErrorListen
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        mFragmentListener = null;
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        if (mFragmentListener != null) {
-            mFragmentListener.setTitle(getString(R.string.app_name));
-        }
         mMovieAdapter.setListener(mListener);
     }
 

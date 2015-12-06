@@ -3,10 +3,11 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".movie.MovieActivity"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:context="com.katmitchell.udacitypopularmovies.detail.DetailActivity">
 
 
     <android.support.v7.widget.Toolbar
@@ -14,16 +15,10 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:background="?attr/colorPrimary"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <Spinner
-                android:id="@+id/sort_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="right"/>
-    </android.support.v7.widget.Toolbar>
-    <fragment
-            android:id="@+id/movie_grid_fragment"
-            android:name="com.katmitchell.udacitypopularmovies.movie.PosterGridFragment"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <FrameLayout
+            android:id="@+id/movie_detail_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 </LinearLayout>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Get an API Key from https://www.themoviedb.org/-->
+    <string name="tmdb_api_key">e7c4d85099565e60f95545ab738bb895</string>
+</resources>

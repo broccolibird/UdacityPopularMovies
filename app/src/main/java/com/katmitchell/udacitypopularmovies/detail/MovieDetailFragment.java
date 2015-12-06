@@ -11,7 +11,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
 import com.katmitchell.udacitypopularmovies.R;
-import com.katmitchell.udacitypopularmovies.fragment.FragmentListener;
 import com.katmitchell.udacitypopularmovies.model.Movie;
 import com.katmitchell.udacitypopularmovies.model.MovieReviewResponse;
 import com.katmitchell.udacitypopularmovies.model.MovieVideoResponse;
@@ -19,7 +18,6 @@ import com.katmitchell.udacitypopularmovies.model.Video;
 import com.katmitchell.udacitypopularmovies.network.GsonSingleton;
 import com.katmitchell.udacitypopularmovies.network.MovieApi;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,8 +45,6 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
     private RecyclerView mRecyclerView;
 
     private MovieDetailAdapter mAdapter;
-
-    private FragmentListener mListener;
 
     public static MovieDetailFragment newInstance(Movie movie) {
         MovieDetailFragment fragment = new MovieDetailFragment();
@@ -85,31 +81,14 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        try {
-            mListener = (FragmentListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Activity must implement FragmentListener");
-        }
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
-
         mAdapter.setListener(null);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        if (mListener != null) {
-            mListener.setTitle(mMovie.getTitle());
-        }
 
         String apiKey = getString(R.string.tmdb_api_key);
         mRequestQueue = Volley.newRequestQueue(getActivity());
@@ -121,6 +100,7 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
 
     @Override
     public void onErrorResponse(VolleyError error) {
+        Log.i(TAG, "onErrorResponse: " + error);
         // TODO
     }
 
@@ -134,6 +114,8 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
 
     private class MovieVideoRequest extends Request<MovieVideoResponse> {
 
+        private static final String TAG = "MovieVideoRequest";
+
         public MovieVideoRequest(int id, String apiKey, Response.ErrorListener listener) {
             super(Method.GET,
                     String.format(MovieApi.ENDPOINT_VIDEOS, id) +
@@ -144,6 +126,7 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
 
         @Override
         protected Response<MovieVideoResponse> parseNetworkResponse(NetworkResponse response) {
+
             MovieVideoResponse movies;
             try {
                 String json = new String(response.data,
@@ -165,6 +148,8 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
 
     private class MovieReviewRequest extends Request<MovieReviewResponse> {
 
+        private static final String TAG = "MovieReviewRequest";
+
         public MovieReviewRequest(int id, String apiKey, Response.ErrorListener listener) {
             super(Method.GET,
                     String.format(MovieApi.ENDPOINT_REVIEWS, id) + "?"
@@ -176,7 +161,8 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
         protected Response<MovieReviewResponse> parseNetworkResponse(NetworkResponse response) {
             MovieReviewResponse reviews;
             try {
-                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                String json = new String(response.data,
+                        HttpHeaderParser.parseCharset(response.headers));
                 Gson gson = GsonSingleton.getInstance().getGson();
                 reviews = gson.fromJson(json, MovieReviewResponse.class);
                 return Response.success(reviews, HttpHeaderParser.parseCacheHeaders(response));

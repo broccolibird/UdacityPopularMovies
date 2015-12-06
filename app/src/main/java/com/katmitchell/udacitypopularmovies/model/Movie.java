@@ -135,8 +135,7 @@ public class Movie implements Parcelable {
     }
 
     public Movie(Parcel in) {
-        boolean[] adults = new boolean[1];
-        in.readBooleanArray(adults);
+        id = in.readInt();
         overview = in.readString();
         date = new Date(in.readLong());
         posterPath = in.readString();
@@ -151,6 +150,7 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(overview);
         dest.writeLong(date.getTime());
         dest.writeString(posterPath);
