@@ -40,6 +40,8 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
 
     private Movie mMovie;
 
+    private String mFirstTrailerUrl;
+
     private RequestQueue mRequestQueue;
 
     private RecyclerView mRecyclerView;
@@ -123,6 +125,10 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
         startActivity(intent);
     }
 
+    public String getFirstTrailerUrl() {
+        return mFirstTrailerUrl;
+    }
+
 
     private class MovieVideoRequest extends Request<MovieVideoResponse> {
 
@@ -155,6 +161,10 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
         @Override
         protected void deliverResponse(MovieVideoResponse response) {
             mAdapter.setVideos(response.getResults());
+
+            if (response.getResults().size() > 0) {
+                mFirstTrailerUrl = response.getResults().get(0).getUrl();
+            }
         }
     }
 
