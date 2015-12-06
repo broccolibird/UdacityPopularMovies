@@ -1,10 +1,21 @@
-<android.support.v7.widget.RecyclerView
+<FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".detail.MovieDetailFragment">
+        android:layout_height="match_parent">
 
-</android.support.v7.widget.RecyclerView>
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context=".detail.MovieDetailFragment"/>
+
+    <TextView
+            android:id="@+id/empty_text"
+            android:text="Select a Movie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+</FrameLayout>

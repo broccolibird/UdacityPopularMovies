@@ -27,7 +27,9 @@ public class DetailActivity extends AppCompatActivity {
 
         if (getIntent().getExtras() != null) {
             mMovie = (Movie) getIntent().getExtras().get(EXTRA_MOVIE);
+        }
 
+        if (savedInstanceState == null) {
             FragmentManager fm = getFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
             ft.add(R.id.movie_detail_container, MovieDetailFragment.newInstance(mMovie));

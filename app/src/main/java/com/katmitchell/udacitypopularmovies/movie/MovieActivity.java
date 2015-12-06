@@ -2,6 +2,7 @@ package com.katmitchell.udacitypopularmovies.movie;
 
 import com.katmitchell.udacitypopularmovies.detail.DetailActivity;
 import com.katmitchell.udacitypopularmovies.R;
+import com.katmitchell.udacitypopularmovies.detail.MovieDetailFragment;
 import com.katmitchell.udacitypopularmovies.model.Movie;
 
 import android.content.Intent;
@@ -14,6 +15,9 @@ import android.widget.Spinner;
 
 public class MovieActivity extends AppCompatActivity implements MovieAdapter.Listener {
 
+    private static final String TAG = "MovieActivity";
+
+    private boolean mTwoPane;
 
     private Spinner mSortSpinner;
 
@@ -22,7 +26,7 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.Lis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_movie);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -47,14 +51,30 @@ public class MovieActivity extends AppCompatActivity implements MovieAdapter.Lis
         mPosterGridFragment = (PosterGridFragment) getFragmentManager()
                 .findFragmentById(R.id.movie_grid_fragment);
 
+        if (findViewById(R.id.movie_detail_container) != null) {
+            mTwoPane = true;
+
+            if (savedInstanceState == null) {
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, MovieDetailFragment.newInstance())
+                        .commit();
+            }
+        }
+
     }
 
 
     @Override
     public void onMovieSelected(Movie movie) {
-        Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra(DetailActivity.EXTRA_MOVIE, movie);
-        startActivity(intent);
+        if (mTwoPane) {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.movie_detail_container, MovieDetailFragment.newInstance(movie))
+                    .commit();
+        } else {
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra(DetailActivity.EXTRA_MOVIE, movie);
+            startActivity(intent);
+        }
     }
 
 }

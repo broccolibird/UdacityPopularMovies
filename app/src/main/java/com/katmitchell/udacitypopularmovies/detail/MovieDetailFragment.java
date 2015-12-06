@@ -54,6 +54,11 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
         return fragment;
     }
 
+    public static MovieDetailFragment newInstance() {
+        MovieDetailFragment fragment = new MovieDetailFragment();
+        return fragment;
+    }
+
     public MovieDetailFragment() {
         // Required empty public constructor
     }
@@ -72,10 +77,15 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
         View root = inflater.inflate(R.layout.fragment_movie_detail, container, false);
 
         mRecyclerView = (RecyclerView) root.findViewById(R.id.recyclerview);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new MovieDetailAdapter();
-        mAdapter.setMovie(getActivity(), mMovie);
-        mRecyclerView.setAdapter(mAdapter);
+
+        if (mMovie == null) {
+            root.findViewById(R.id.empty_text).setVisibility(View.VISIBLE);
+        } else {
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            mAdapter.setMovie(getActivity(), mMovie);
+            mRecyclerView.setAdapter(mAdapter);
+        }
 
         return root;
     }
@@ -90,12 +100,14 @@ public class MovieDetailFragment extends Fragment implements Response.ErrorListe
     public void onResume() {
         super.onResume();
 
-        String apiKey = getString(R.string.tmdb_api_key);
-        mRequestQueue = Volley.newRequestQueue(getActivity());
-        mRequestQueue
-                .add(new MovieVideoRequest(mMovie.getId(), apiKey, this));
-        mRequestQueue.add(new MovieReviewRequest(mMovie.getId(), apiKey, this));
-        mAdapter.setListener(this);
+        if (mMovie != null) {
+            String apiKey = getString(R.string.tmdb_api_key);
+            mRequestQueue = Volley.newRequestQueue(getActivity());
+            mRequestQueue
+                    .add(new MovieVideoRequest(mMovie.getId(), apiKey, this));
+            mRequestQueue.add(new MovieReviewRequest(mMovie.getId(), apiKey, this));
+            mAdapter.setListener(this);
+        }
     }
 
     @Override
